@@ -7,7 +7,7 @@ url="http://ufm.edu/Portal"
 try:
     html_content = requests.get(url).text
 except:
-    print(f"unable to get {url}")
+    print("unable to get {url}")
     sys.exit(1)
 
 # Parse the html content, this is the Magic ;)
@@ -22,3 +22,5 @@ print(soup.title.string)
 for div in soup.find_all("div"):
     print(div)
     print("--------------------------")
+
+# nueva linea
