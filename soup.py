@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+import shutil
 #,sys,csv,json
 
 #url="http://ufm.edu/Portal"
@@ -185,11 +186,117 @@ print(ItemSeparator)
 #---
 
 # DISPLAY ALL "Estudios"
-titles_text=""
-for titles in soup2.find('div', calss_="estudios"):
-    titles_text = titles.get('div')
+print("Display ALL 'Estudios': ")
+titles = soup2.find_all('div', class_="estudios",limit=5)
+for i in titles:
+    print("- ", i.text)
 
-print(titles_text)
+print(ItemSeparator)
+
+#---
+
+# DISPLAY FROM "leftbar" ALL <li> ITEMS
+print("Display from 'leftbar' all <li> items: ")
+leftbar = soup2.find_all('div',class_="leftbar", limit=4)
+for bar in leftbar:
+    print(bar.ul.text)
+print(ItemSeparator)
+
+#----
+
+# GET AND DISPLAY ALL AVAILABLE SOCIAL MEDIA WITH ITS LINKS (href) 
+print("Get and display all available social media with its links: ")
+social = soup2.find('div', class_="social pull-right")
+a=social.find_all("a")
+a_href =""
+for media in a:
+    a_href = media['href']
+    print(a_href)
+print(ItemSeparator)
+
+#---
+
+# COUNT ALL <a>
+contador2 = 0
+for a_tags in soup2.find_all("a"):
+    contador2 = contador2 + 1
+
+print("Count all <a>: ", contador2)
+print(ItemSeparator)
+print(PartsSeparator)
+
+
+# ------------- PHASE 3 ----------------
+url3="https://fce.ufm.edu/carrera/cs/"
+html3 = requests.get(url3).text
+soup3 = BeautifulSoup(html3, 'html.parser')
+
+print("3. CS ")
+print("")
+
+# GET TITLE
+print("GET the title: ",soup3.title.string)
+print(ItemSeparator)
+
+#----
+
+# DOWNLOAD the "FACULTAD de CIENCIAS ECONOMICAS" logo
+print("Download the 'FACULTAD de CIENCIAS ECONOMICAS' logo: ")
+find_logo =soup3.find_all("a", href = "https://fce.ufm.edu")
+for logo in find_logo:
+    img = logo.find("img")['src']
+gt = requests.get(img, stream = True)
+show_logo = open('logo.jpg', 'wb')
+gt.raw.decode_content = True
+shutil.copyfileobj(gt.raw,show_logo)
+print(show_logo)
+print(ItemSeparator)
+
+
+#---
+
+# GET FOLLOWING <meta>: "title", "description" ("og")
+Mtitle =""
+metaT = soup3.find('meta', attrs={'property':'og:title'})['content']
+for i in metaT:
+    Mtitle = metaT
+
+descr = ""
+descript = soup3.find('meta', {'property':'og:description'})['content']
+for j in descript:
+    descr = descript
+
+print("Get <meta>: title: ")
+print(Mtitle)
+print("")
+print("Get <meta>: description: ")
+print(descr)
+print(ItemSeparator)
+
+#---
+
+# COUNT ALL <a>
+contador3 = 0
+for a_s in soup3.find_all("a"):
+    contador3 = contador3 + 1
+
+print("Count all <a>: ", contador3)
+print(ItemSeparator)
+
+#---
+
+# COUNT ALL <div>
+contador4 = 0
+for divs in soup3.find_all("div"):
+    contador4 = contador4 + 1
+
+print("Count all <div>: ", contador4)
+print(ItemSeparator)
+
+
+
+
+
 
 
 
